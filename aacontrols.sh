@@ -88,10 +88,10 @@ function check_python() {
   if [[ "$(which python)" == *"not found" || "$(python --version)" != *"3.10"* ]]; then;
     if [[ "$(which pyenv)" == *"not found" ]]; then;
       while true; do;
-        read -p "Do you want to install pyenv from brew and setup Python 3.10.x automatically? (y/n) " answer;
+        read -p "Do you want to install pyenv from brew and setup Python 3.10.0 automatically? (y/n) " answer;
         case $answer in
           [Yy]* ) info "We are installing pyenv on your system."; brew install pyenv; break;;
-          [Nn]* ) fatal "Canceled! Please, setup the Python 3.10.x manually and retry.";;
+          [Nn]* ) fatal "Canceled! Please, setup the Python 3.10.0 manually and retry.";;
           * ) break;;
         esac
       done;
@@ -100,8 +100,8 @@ function check_python() {
     eval "$(pyenv init -)" > /dev/null;
     alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew' > /dev/null;
 
-    pyenv install 3.10.7;
-    pyenv local 3.10.7;
+    pyenv install 3.10.0;
+    pyenv local 3.10.0;
   fi;
 
   info "Python step is fully done.";
@@ -174,15 +174,6 @@ function check_pydeps() {
   info "====> Pydeps step is fully done.";
 }
 
-function hook_before() {
-  check_brew;
-  check_rust;
-  check_python;
-  check_repo;
-  check_venv;
-  check_pydeps;
-}
-
 function hook_after() {
   cd ..;
   exit 0;
@@ -191,7 +182,12 @@ function hook_after() {
 function act_install() {
   info "====> Installing...";
 
-  hook_before;
+  check_brew;
+  check_rust;
+  check_python;
+  check_repo;
+  check_venv;
+  check_pydeps;
 
   info "====> Installed. Please, place your models and modules inside the directory.";
   open ./stable-diffusion-webui;
@@ -202,7 +198,7 @@ function act_install() {
 function act_start() {
   info "====> Starting...";
 
-  hook_before;
+  check_venv;
 
   info "PYTORCH_ENABLE_MPS_FALLBACK set.";
   export PYTORCH_ENABLE_MPS_FALLBACK=1;
