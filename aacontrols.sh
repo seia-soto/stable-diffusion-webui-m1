@@ -20,7 +20,7 @@ The following stacks will be installed and used.
 Copyright 2022 HoJeong Go. All rights reserved.
 At the any time, you can modify, or fork and redistribute the script.
 
-EOF;
+EOF
 }
 
 function info() {
