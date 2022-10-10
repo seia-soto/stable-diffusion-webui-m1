@@ -42,6 +42,17 @@ function check_arm() {
   fi;
 }
 
+function check_sdk() {
+  info "====> Checking the current installation state of Xcode CLT.";
+  export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) > /dev/null;
+
+  if [[ "$(xcode-select -p)" != *"CommandLineTools"* ]]; then;
+    fatal "You need to install Xcode CLT via `xcode-select --install`. If you're on beta, please visit Apple Developers Download.";
+  fi;
+
+  info "SDK step is fully done.";
+}
+
 function check_brew() {
   info "====> Checking the current installation state of Homebrew.";
   eval "$(/opt/homebrew/bin/brew shellenv)" > /dev/null;
@@ -182,6 +193,7 @@ function hook_after() {
 function act_install() {
   info "====> Installing...";
 
+  check_sdk;
   check_brew;
   check_rust;
   check_python;
@@ -198,6 +210,8 @@ function act_install() {
 function act_start() {
   info "====> Starting...";
 
+  check_sdk;
+  check_python;
   check_venv;
 
   info "PYTORCH_ENABLE_MPS_FALLBACK set.";
