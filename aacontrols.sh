@@ -91,10 +91,7 @@ function check_rust() {
 
 function check_python() {
   info "====> Checking the current installation state of Python.";
-  
-  if [[ "$(which pyenv)" == *"not found" ]]; then;
-    eval "$(pyenv init -)" > /dev/null;
-  fi;
+  eval "$(pyenv init -)" > /dev/null;
 
   if [[ "$(which python)" == *"not found" || "$(python --version)" != *"3.10"* ]]; then;
     if [[ "$(which pyenv)" == *"not found" ]]; then;
