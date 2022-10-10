@@ -9,6 +9,7 @@ A helper utility for ARM based macs to initiate AUTOMATIC1111/stable-diffusion-w
 Install prerequisites: $1 -i
 Start server: $1 -s
 Clean up directory: $1 -c
+Open webui directory: $1 -o
 
 ----
 
@@ -222,6 +223,14 @@ function act_start() {
   hook_after;
 }
 
+function act_open() {
+  info "====> Opening webui directory...";
+
+  open ./stable-diffusion-webui;
+
+  hook_after;
+}
+
 function act_clean() {
   info "====> Cleaning...";
 
@@ -240,6 +249,7 @@ while getopts "isc" opt; do;
     i) act_install; break;;
     s) act_start; break;;
     c) act_clean; break;;
+    o) act_open; break;;
     *) fatal " ! Unknown option $opt";;
   esac;
 done;
