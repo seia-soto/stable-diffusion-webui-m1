@@ -244,7 +244,7 @@ mkdir -p stable-diffusion-project;
 
 cd stable-diffusion-project;
 
-while getopts "isc" opt; do;
+while getopts "isco" opt; do;
   case $opt in
     i) act_install; break;;
     s) act_start; break;;
