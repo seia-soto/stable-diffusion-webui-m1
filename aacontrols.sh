@@ -220,7 +220,7 @@ function act_clean() {
 
   rm -vrf ./*;
 
-  exit 0;
+  hook_after;
 }
 
 help "$0";
@@ -233,6 +233,6 @@ while getopts "isc" opt; do;
     i) act_install; break;;
     s) act_start; break;;
     c) act_clean; break;;
-    *) warn " ! Unknown option $opt";;
+    *) fatal " ! Unknown option $opt";;
   esac;
 done;
