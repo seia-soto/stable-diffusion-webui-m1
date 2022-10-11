@@ -4,22 +4,22 @@ set +x;
 function help() {
   cat << EOF
 
-A helper utility for ARM based macs to initiate AUTOMATIC1111/stable-diffusion-webui
+A helper utility for ARM based macs to initiate invoke-ai/InvokeAI
 
 Install prerequisites: $1 -i
 Start server: $1 -s
 Clean up directory: $1 -c
-Open webui directory: $1 -o
+Open source directory: $1 -o
 
 ----
 
 The following stacks will be installed and used.
 - Rust via Rustup
 - Python 3 and venv via Pyenv
-- Homebrew and the following packages: 'cmake protobuf git wget'
+- Homebrew and the following packages: 'cmake protobuf git wget xz'
 
 Copyright 2022 HoJeong Go. All rights reserved.
-At the any time, you can modify, or fork and redistribute the script.
+You can modify or redistribute the script for public good without any permission.
 
 EOF
 }
@@ -73,7 +73,7 @@ function check_brew() {
   fi;
 
   info "Homebrew is ready and installing dependencies.";
-  brew install cmake protobuf git wget;
+  brew install cmake protobuf git wget xz;
 
   info "Homebrew step is fully done.";
 }
@@ -117,34 +117,16 @@ function check_python() {
 }
 
 function check_repo() {
-  info "====> Checking the current state of stable-diffusion-webui repository.";
+  info "====> Checking the current state of invokieai repository.";
 
-  if [[ ! -d "./stable-diffusion-webui" ]]; then;
-    git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git stable-diffusion-webui;
+  if [[ ! -d "./invokeai" ]]; then;
+    git clone https://github.com/invoke-ai/InvokeAI.git invokeai;
   fi;
 
-  cd stable-diffusion-webui;
+  cd invokeai;
   git pull --rebase;
 
-  if [[ ! -d "./repositories/stable-diffusion" ]]; then;
-    git clone https://github.com/CompVis/stable-diffusion.git repositories/stable-diffusion;
-  fi;
-
-  if [[ ! -d "./repositories/taming-transformers" ]]; then;
-    git clone https://github.com/CompVis/taming-transformers.git repositories/taming-transformers;
-  fi;
-
-  if [[ ! -d "./repositories/CodeFormer" ]]; then;
-    git clone https://github.com/sczhou/CodeFormer.git repositories/CodeFormer;
-  fi;
-
-  if [[ ! -d "./salesforce/BLIP" ]]; then;
-    git clone https://github.com/salesforce/BLIP.git repositories/BLIP;
-  fi;
-
-  if [[ ! -d "./repositories/k-diffusion" ]]; then;
-    git clone https://github.com/Birch-san/k-diffusion repositories/k-diffusion;
-  fi;
+  mkdir -p models/ldm/stable-diffusion-v1;
 
   cd ..;
   
@@ -166,17 +148,14 @@ function check_venv() {
 function check_pydeps() {
   info "====> Checking the python dependencies.";
 
-  cd stable-diffusion-webui;
+  cd invokeai;
 
-  pip install -r requirements.txt;
-  pip install git+https://github.com/openai/CLIP.git@d50d76daa670286dd6cacf3bcd80b5e4823fc8e1;
-  pip install git+https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379;
-
-  pip install fastapi jsonmerge einops clean-fid resize-right torchdiffeq lark gradio omegaconf piexif fonts font-roboto pytorch_lightning transformers kornia realesrgan;
+  pip install -r requirements-mac-MPS-CPU.txt;
   pip install protobuf==3.19.4;
   pip uninstall torch torchvision torchaudio -y;
   pip install --pre torch==1.13.0.dev20220922 torchvision==0.14.0.dev20220924 -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps;
-  pip install gdown;
+
+  python scripts/preload_models.py;
 
   cd ..;
 
@@ -199,8 +178,9 @@ function act_install() {
   check_venv;
   check_pydeps;
 
-  info "====> Installed. Please, place your models and modules inside the directory.";
-  open ./stable-diffusion-webui;
+  info "====> Installed. Please, place your models and modules inside the directory. (./invokeai/models/ldm/stable-diffusion-v1)";
+  touch ./invokeai/models/ldm/stable-diffusion-v1/PUT_IN_THIS_DIRECTORY;
+  open ./invokeai/models/ldm/stable-diffusion-v1;
 
   hook_after;
 }
@@ -211,12 +191,14 @@ function act_start() {
   check_sdk;
   check_python;
   check_venv;
+  check_repo;
 
   info "PYTORCH_ENABLE_MPS_FALLBACK set.";
   export PYTORCH_ENABLE_MPS_FALLBACK=1;
 
-  cd stable-diffusion-webui;
-  python webui.py --precision full --no-half --opt-split-attention-v1;
+  cd invokeai;
+
+  python scripts/invoke.py --web;
 
   cd ..;
 
@@ -224,9 +206,9 @@ function act_start() {
 }
 
 function act_open() {
-  info "====> Opening webui directory...";
+  info "====> Opening invokeai directory...";
 
-  open ./stable-diffusion-webui;
+  open ./invokeai;
 
   hook_after;
 }
@@ -235,6 +217,12 @@ function act_clean() {
   info "====> Cleaning...";
 
   rm -vrf ./*;
+
+  warn "If you're encountering some error related to LZMA module, you might try to reinstall the Python.";
+  warn "We'll prompt you to remove the Python installation used in our project if possible.";
+  warn "(IMPORTANT) Please, restart your shell to take effect after uninstalling!"
+  eval "$(pyenv init -)" > /dev/null;
+  pyenv uninstall 3.10.0;
 
   hook_after;
 }
