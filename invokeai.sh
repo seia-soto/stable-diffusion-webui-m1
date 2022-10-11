@@ -198,7 +198,7 @@ function act_start() {
 
   cd invokeai;
 
-  python scripts/invoke.py --web;
+  python scripts/invoke.py --web --free_gpu_mem;
 
   cd ..;
 
