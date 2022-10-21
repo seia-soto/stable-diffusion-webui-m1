@@ -30,7 +30,8 @@ curl -sL https://raw.githubusercontent.com/seia-soto/stable-diffusion-webui-m1/m
 chmod +x ./webui.sh
 ```
 
-The default command for webui is `python webui.py --precision full --no-half --opt-split-attention-v1 --use-cpu GFPGAN CodeFormer;`.
+The default command for webui is `python webui.py --precision full --no-half --opt-split-attention-v1 --use-cpu Interrogate GFPGAN CodeFormer BSRGAN ESRGAN SCUNet;`.
+The official webui installation script use Pytorch stable build, but I'll stick to the nightly build at this time to be performant.
 
 ## Steps
 

@@ -223,7 +223,7 @@ function act_start() {
 
     python webui.py $ADDITIONAL_ARGS;
   else;
-    python webui.py --precision full --no-half --opt-split-attention-v1 --use-cpu GFPGAN CodeFormer;
+    python webui.py --precision full --no-half --opt-split-attention-v1 --use-cpu Interrogate GFPGAN CodeFormer BSRGAN ESRGAN SCUNet;
   fi;
 
   cd ..;
