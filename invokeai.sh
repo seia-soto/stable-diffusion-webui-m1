@@ -7,7 +7,7 @@ function help() {
 A helper utility for ARM based macs to initiate invoke-ai/InvokeAI
 
 Install prerequisites: $1 -i
-Start server: $1 -s
+Start server: $1 -s [ADDITIONAL_ARGS]
 Clean up directory: $1 -c
 Open source directory: $1 -o
 
@@ -198,7 +198,15 @@ function act_start() {
 
   cd invokeai;
 
-  python scripts/invoke.py --web --free_gpu_mem;
+  local ADDITIONAL_ARGS=("${(z)@}");
+
+  if [[ "${ADDITIONAL_ARGS}" ]]; then;
+    warn "Custom arguments detected: ${ADDITIONAL_ARGS}";
+
+    python scripts/invoke.py $ADDITIONAL_ARGS;
+  else;
+    python scripts/invoke.py --web --free_gpu_mem;
+  fi;
 
   cd ..;
 
@@ -235,7 +243,7 @@ cd stable-diffusion-project;
 while getopts "isco" opt; do;
   case $opt in
     i) act_install; break;;
-    s) act_start; break;;
+    s) act_start ${@:2}; break;;
     c) act_clean; break;;
     o) act_open; break;;
     *) fatal " ! Unknown option $opt";;

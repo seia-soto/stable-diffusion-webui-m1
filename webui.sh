@@ -7,7 +7,7 @@ function help() {
 A helper utility for ARM based macs to initiate AUTOMATIC1111/stable-diffusion-webui
 
 Install prerequisites: $1 -i
-Start server: $1 -s
+Start server: $1 -s [ADDITIONAL_ARGS]
 Clean up directory: $1 -c
 Open source directory: $1 -o
 
@@ -215,7 +215,16 @@ function act_start() {
   export PYTORCH_ENABLE_MPS_FALLBACK=1;
 
   cd stable-diffusion-webui;
-  python webui.py --precision full --no-half --opt-split-attention-v1;
+
+  local ADDITIONAL_ARGS=("${(z)@}");
+
+  if [[ "${ADDITIONAL_ARGS}" ]]; then;
+    warn "Custom arguments detected: ${ADDITIONAL_ARGS}";
+
+    python webui.py $ADDITIONAL_ARGS;
+  else;
+    python webui.py --precision full --no-half --opt-split-attention-v1 --use-cpu GFPGAN CodeFormer;
+  fi;
 
   cd ..;
 
@@ -252,7 +261,7 @@ cd stable-diffusion-project;
 while getopts "isco" opt; do;
   case $opt in
     i) act_install; break;;
-    s) act_start; break;;
+    s) act_start ${@:2}; break;;
     c) act_clean; break;;
     o) act_open; break;;
     *) fatal " ! Unknown option $opt";;

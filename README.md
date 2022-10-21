@@ -19,6 +19,8 @@ curl -sL https://raw.githubusercontent.com/seia-soto/stable-diffusion-webui-m1/m
 chmod +x ./invokeai.sh
 ```
 
+The default command for invokeai is `python scripts/invoke.py --web --free_gpu_mem;`.
+
 ### stable-diffusion-webui
 
 See more in https://github.com/AUTOMATIC1111/stable-diffusion-webui
@@ -28,13 +30,18 @@ curl -sL https://raw.githubusercontent.com/seia-soto/stable-diffusion-webui-m1/m
 chmod +x ./webui.sh
 ```
 
+The default command for webui is `python webui.py --precision full --no-half --opt-split-attention-v1 --use-cpu GFPGAN CodeFormer;`.
+
 ## Steps
 
 The scripts are consisted of simple steps.
 
 1. Install prerequisites: `./script.sh -i`
 2. Put your model in proper directory.
-3. Start the server: `./script.sh -s`
+3. Start the server: `./script.sh -s`, or using custom arguments: `./scripts.sh -s --` (allows you to run as CLI)
+
+> When using the custom arguments, pasting others' code can lead you to run dangerous code.
+> The `-s` option at the first will not be passed to the program if any remaining argument exists.
 
 ## Options
 
