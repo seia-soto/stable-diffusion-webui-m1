@@ -44,6 +44,10 @@ The scripts are consisted of simple steps.
 > When using the custom arguments, pasting others' code can lead you to run dangerous code.
 > The `-s` option at the first will not be passed to the program if any remaining argument exists.
 
+### Updating the source
+
+To update the source, please run the installation script again: `./script.sh -i`
+
 ## Options
 
 ## Troubleshooting

@@ -174,7 +174,7 @@ function check_pydeps() {
   pip install fastapi jsonmerge einops clean-fid resize-right torchdiffeq lark gradio omegaconf piexif fonts font-roboto pytorch_lightning transformers kornia realesrgan;
   pip uninstall torch torchvision torchaudio -y;
   pip install --pre torch==1.13.0.dev20220922 torchvision==0.14.0.dev20220924 -f https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html --no-deps;
-  pip install gdown;
+  pip install gdown psutil;
 
   cd ..;
 
