@@ -1,4 +1,6 @@
-# stable-diffusion-webui-m1
+# stable-diffusion-webui-m1 (deprecated)
+
+## The most projects in ML started to support `venv` correctly, and I decided to close this project as the goal accomplished.
 
 Many examples of Stable Diffusion use `conda` instead of `venv`.
 This is another variant of modified install script to use `venv` and `rustup` as I don't want them to mass up my system.
